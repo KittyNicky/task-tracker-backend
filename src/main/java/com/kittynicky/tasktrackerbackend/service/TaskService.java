@@ -1,6 +1,5 @@
 package com.kittynicky.tasktrackerbackend.service;
 
-import com.kittynicky.tasktrackerbackend.database.entity.User;
 import com.kittynicky.tasktrackerbackend.database.entity.Task;
 import com.kittynicky.tasktrackerbackend.database.repository.TaskRepository;
 import com.kittynicky.tasktrackerbackend.dto.TaskRequest;
@@ -26,7 +25,9 @@ public class TaskService {
     private final TaskResponseMapper taskResponseMapper;
     private final UserService userService;
 
-    public List<Task> findAllByUser(User user) {
+    public List<Task> findAll(Principal principal) {
+        var user = userService.getUser(principal);
+
         return taskRepository.findAllByUser(user);
     }
 
@@ -61,8 +62,10 @@ public class TaskService {
     @Transactional
     public boolean delete(Principal principal,
                           UUID id) {
+        var user = userService.getUser(principal);
+
         return taskRepository.findById(id)
-                .filter(entity -> entity.getUser().equals(userService.getUser(principal)))
+                .filter(entity -> entity.getUser().equals(user))
                 .map(entity -> {
                     taskRepository.delete(entity);
                     taskRepository.flush();
@@ -80,6 +83,7 @@ public class TaskService {
                 .map(taskRequestMapper::map)
                 .map(entity -> {
                     entity.setUser(user);
+                    entity.setUpdatedAt(LocalDateTime.now());
                     return entity;
                 })
                 .map(taskRepository::save)

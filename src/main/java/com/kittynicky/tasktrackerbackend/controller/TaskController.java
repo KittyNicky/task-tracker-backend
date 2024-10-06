@@ -1,6 +1,5 @@
 package com.kittynicky.tasktrackerbackend.controller;
 
-import com.kittynicky.tasktrackerbackend.service.UserService;
 import com.kittynicky.tasktrackerbackend.dto.TaskRequest;
 import com.kittynicky.tasktrackerbackend.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -19,20 +18,15 @@ import static org.springframework.http.ResponseEntity.*;
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
-    private final UserService userService;
 
     @GetMapping
     public ResponseEntity<?> getAll(Principal principal) {
-        var user = userService.getUser(principal);
-
-        return ok(taskService.findAllByUser(user));
+        return ok(taskService.findAll(principal));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(Principal principal,
                                      @PathVariable UUID id) {
-        var user = userService.getUser(principal);
-
         return ok(taskService.findById(principal, id));
     }
 
