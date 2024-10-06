@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: task-tracker-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5434/task_tracker
+    username: task_tracker_service
+    password: qweasd123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  kafka:
+    bootstrap-servers: localhost:9092
+
+token:
+  signing:
+    key: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855
+
+logging:
+  level:
+    root: INFO
+  file:
+    name: task-tracker-backend.log
+    path: /
