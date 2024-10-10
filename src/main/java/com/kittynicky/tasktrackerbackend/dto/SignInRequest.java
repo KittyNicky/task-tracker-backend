@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Builder
@@ -14,5 +15,6 @@ public class SignInRequest {
 
     @NotBlank(message = "Password must not be empty")
     @Size(min = 3, max = 255, message = "Password must contain from 3 to 255 characters")
+    @ToString.Exclude
     private String password;
 }

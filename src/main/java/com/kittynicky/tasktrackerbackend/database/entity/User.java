@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ public class User implements UserDetails {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ToString.Exclude
     private Long id;
 
     @Column(name = "username", nullable = false)
@@ -43,19 +43,15 @@ public class User implements UserDetails {
     @NotBlank
     @Size(max = 255)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private String password;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
-    @EqualsAndHashCode.Exclude
-    private Role role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Task> tasks = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of();
     }
 
     @Override

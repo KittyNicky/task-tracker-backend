@@ -21,11 +21,15 @@ public class AuthenticationController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest request) {
+        log.info("Sign up request: {}", request);
+
         return ResponseEntity.ok(authService.signUp(request));
     }
 
     @PostMapping("/sign-in")
     public ResponseEntity<?> signIn(@RequestBody @Valid SignInRequest request) {
+        log.info("Sign in request: {}", request);
+
         return ResponseEntity.ok(authService.signIn(request));
     }
 }

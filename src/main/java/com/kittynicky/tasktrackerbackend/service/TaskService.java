@@ -7,6 +7,7 @@ import com.kittynicky.tasktrackerbackend.dto.TaskResponse;
 import com.kittynicky.tasktrackerbackend.mapper.TaskRequestMapper;
 import com.kittynicky.tasktrackerbackend.mapper.TaskResponseMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -26,6 +28,8 @@ public class TaskService {
     private final UserService userService;
 
     public List<Task> findAll(Principal principal) {
+        log.info("Finding all tasks");
+
         var user = userService.getUser(principal);
 
         return taskRepository.findAllByUser(user);
@@ -33,6 +37,8 @@ public class TaskService {
 
     public TaskResponse findById(Principal principal,
                                  UUID id) {
+        log.info("Finding task with id {}", id);
+
         var user = userService.getUser(principal);
 
         return taskRepository.findById(id)
@@ -45,6 +51,8 @@ public class TaskService {
     public TaskResponse update(Principal principal,
                                UUID id,
                                TaskRequest taskRequest) {
+        log.info("Updating task with id {}", id);
+
         var user = userService.getUser(principal);
 
         return taskRepository.findById(id)
@@ -62,6 +70,8 @@ public class TaskService {
     @Transactional
     public boolean delete(Principal principal,
                           UUID id) {
+        log.info("Deleting task with id {}", id);
+
         var user = userService.getUser(principal);
 
         return taskRepository.findById(id)
@@ -77,6 +87,8 @@ public class TaskService {
     @Transactional
     public TaskResponse create(Principal principal,
                                TaskRequest taskRequest) {
+        log.info("Creating task={}", taskRequest);
+
         var user = userService.getUser(principal);
 
         return Optional.of(taskRequest)

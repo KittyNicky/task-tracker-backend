@@ -25,6 +25,8 @@ public class UserController {
     @GetMapping
     @SneakyThrows
     public ResponseEntity<?> getUser(Principal principal) {
+        log.info("Getting user {}", principal.getName());
+
         if (principal == null) {
             throw new AuthenticationException("Principal is null");
         }
