@@ -11,7 +11,7 @@ public class Variables {
             <body>
             <h3>Welcome to the task-tracker-service!</h3>
             You have successfully registered in the service.
-            <br> 
+            <br>
             Come on, create your first task!
             </body>
             """;
