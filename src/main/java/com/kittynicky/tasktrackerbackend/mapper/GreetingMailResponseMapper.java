@@ -2,6 +2,7 @@ package com.kittynicky.tasktrackerbackend.mapper;
 
 import com.kittynicky.tasktrackerbackend.database.entity.User;
 import com.kittynicky.tasktrackerbackend.dto.GreetingMailResponse;
+import com.kittynicky.tasktrackerbackend.utils.Variables;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +12,10 @@ public class GreetingMailResponseMapper implements Mapper<User, GreetingMailResp
 
     @Override
     public GreetingMailResponse map(User from) {
-        GreetingMailResponse greetingMailResponse = new GreetingMailResponse();
-
-        greetingMailResponse.setEmail(from.getEmail());
-        greetingMailResponse.setText(String.format(greetingMailResponse.getText(), from.getUsername()));
-
-        return greetingMailResponse;
+        return GreetingMailResponse.builder()
+                .subject(Variables.GREETING_MAIL_RESPONSE_SUBJECT)
+                .email(from.getEmail())
+                .text(String.format(Variables.GREETING_MAIL_RESPONSE_TEXT, from.getUsername()))
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.kittynicky.tasktrackerbackend.mapper;
 
+import com.kittynicky.tasktrackerbackend.database.entity.Role;
 import com.kittynicky.tasktrackerbackend.database.entity.User;
 import com.kittynicky.tasktrackerbackend.dto.SignUpRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ public class SignUpRequestMapper implements Mapper<SignUpRequest, User> {
         return User.builder()
                 .username(from.getUsername())
                 .email(from.getEmail())
+                .role(Role.USER)
                 .password(passwordEncoder.encode(from.getPassword()))
                 .build();
     }

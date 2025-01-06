@@ -5,7 +5,7 @@ import com.kittynicky.tasktrackerbackend.dto.TaskRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TaskRequestMapper implements Mapper<TaskRequest, Task> {
+public class TaskMapper implements Mapper<TaskRequest, Task> {
     @Override
     public Task map(TaskRequest from) {
         Task to = new Task();

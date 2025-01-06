@@ -1,14 +1,14 @@
 package com.kittynicky.tasktrackerbackend.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldNameConstants;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldNameConstants(level = AccessLevel.PRIVATE)
 public class JwtAuthenticationResponse {
-    private String token;
+    String accessToken;
+    String refreshToken;
 }

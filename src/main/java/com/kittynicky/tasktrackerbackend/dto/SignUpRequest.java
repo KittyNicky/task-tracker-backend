@@ -1,5 +1,6 @@
 package com.kittynicky.tasktrackerbackend.dto;
 
+import com.kittynicky.tasktrackerbackend.database.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -23,4 +24,6 @@ public class SignUpRequest {
     @Size(min = 3, max = 255, message = "Password must contain from 3 to 255 characters")
     @ToString.Exclude
     private String password;
+
+    private Role role;
 }
