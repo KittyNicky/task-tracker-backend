@@ -1,4 +1,4 @@
-package com.kittynicky.tasktrackerbackend.advice;
+package com.kittynicky.tasktrackerbackend.handler;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -16,6 +16,6 @@ public class ApiResponse {
     public ApiResponse(HttpStatus status, String message) {
         this.status = status;
         this.message = message;
-        this.timestamp = LocalDateTime.now();
+        this.timestamp  = LocalDateTime.now();
     }
 }

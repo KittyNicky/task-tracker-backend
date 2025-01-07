@@ -1,6 +1,8 @@
 spring:
   application:
     name: task-tracker-backend
+
+  # Database
   datasource:
     url: jdbc:postgresql://database:5432/task_tracker
     username: ${DB_USERNAME}
@@ -8,18 +10,24 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # Broker
   kafka:
     bootstrap-servers: broker:29092
     email-sending-tasks-topic: EMAIL_SENDING_TASKS
 
-token:
-  signing:
-    key: ${TOKEN_KEY}
+# Security
+security:
+  jwt:
+    secret_key: ${SECRET_KEY}
+    access_token_expiration: 36000000 # 10 hours
+    refresh_token_expiration: 252000000 # 7 days
+
 server:
   port: 8080

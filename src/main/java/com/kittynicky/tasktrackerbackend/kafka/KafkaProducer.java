@@ -1,7 +1,6 @@
 package com.kittynicky.tasktrackerbackend.kafka;
 
 import com.kittynicky.tasktrackerbackend.dto.GreetingMailResponse;
-import com.kittynicky.tasktrackerbackend.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -20,9 +19,9 @@ public class KafkaProducer {
         CompletableFuture<SendResult<String, GreetingMailResponse>> future = kafkaTemplate.send(topic, greetingMailResponse);
         future.whenComplete((result, ex) -> {
             if (ex == null) {
-                log.info("Sent message=[" + greetingMailResponse + "] with offset=[" + result.getRecordMetadata().offset() + "]");
+                log.info("Sent message=[{}] with offset=[{}]", greetingMailResponse, result.getRecordMetadata().offset());
             } else {
-                log.error("Unable to send message=[" + greetingMailResponse + "] due to: " + ex.getMessage());
+                log.error("Unable to send message=[{}] due to: {}", greetingMailResponse, ex.getMessage());
             }
         });
     }

@@ -1,20 +1,24 @@
-package com.kittynicky.tasktrackerbackend.configuration;
+package com.kittynicky.tasktrackerbackend.config;
 
+import com.kittynicky.tasktrackerbackend.filter.JwtFilter;
+import com.kittynicky.tasktrackerbackend.handler.CustomAccessDeniedHandler;
+import com.kittynicky.tasktrackerbackend.handler.CustomLogoutHandler;
 import com.kittynicky.tasktrackerbackend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -27,13 +31,15 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtFilter jwtFilter;
     private final UserService userService;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomLogoutHandler customLogoutHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
+
+        http.csrf(AbstractHttpConfigurer::disable)
                 // Allowing requests from all domains
                 .cors(cors -> cors.configurationSource(request -> {
                     var configuration = new CorsConfiguration();
@@ -44,14 +50,27 @@ public class SecurityConfig {
                     return configuration;
                 }))
                 // Configuring access to endpoints
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/auth/*").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .authorizeHttpRequests(auth -> {
+                            auth.requestMatchers("/api/auth/*").permitAll();
+                            auth.requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll();
+                            auth.requestMatchers("/admin/**").hasRole("ADMIN");
+                            auth.anyRequest().authenticated();
+                        }
+                )
+                .userDetailsService(userService)
+                .exceptionHandling(e -> {
+                    e.accessDeniedHandler(customAccessDeniedHandler);
+                    e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                })
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout(log -> {
+                    log.logoutUrl("/api/auth/logout");
+                    log.addLogoutHandler(customLogoutHandler);
+                    log.logoutSuccessHandler(
+                            (request, response, authentication) ->
+                                    SecurityContextHolder.clearContext());
+                });
 
         return http.build();
     }
@@ -62,19 +81,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
-        authProvider.setUserDetailsService(userService.userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
-
-        return authProvider;
-    }
-
-    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-
-
 }

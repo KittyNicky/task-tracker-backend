@@ -1,4 +1,4 @@
-package com.kittynicky.tasktrackerbackend.advice;
+package com.kittynicky.tasktrackerbackend.handler;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;

@@ -1,14 +1,14 @@
 package com.kittynicky.tasktrackerbackend.mapper;
 
 import com.kittynicky.tasktrackerbackend.database.entity.User;
-import com.kittynicky.tasktrackerbackend.dto.UserResponse;
+import com.kittynicky.tasktrackerbackend.dto.UserDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserResponseMapper implements Mapper<User, UserResponse> {
+public class UserDtoMapper implements Mapper<User, UserDto> {
     @Override
-    public UserResponse map(User from) {
-        return UserResponse.builder()
+    public UserDto map(User from) {
+        return UserDto.builder()
                 .id(from.getId())
                 .username(from.getUsername())
                 .email(from.getEmail())
