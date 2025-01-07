@@ -67,8 +67,9 @@ public class SecurityConfig {
                 .logout(log -> {
                     log.logoutUrl("/api/auth/logout");
                     log.addLogoutHandler(customLogoutHandler);
-                    log.logoutSuccessHandler((request, response, authentication) ->
-                            SecurityContextHolder.clearContext());
+                    log.logoutSuccessHandler(
+                            (request, response, authentication) ->
+                                    SecurityContextHolder.clearContext());
                 });
 
         return http.build();
